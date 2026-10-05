@@ -4,7 +4,6 @@ from functools import reduce
 
 from pyformlang.fst import FST
 
-
 class Transducer(ABC):
     @abstractmethod
     def apply(self, text: str) -> str:

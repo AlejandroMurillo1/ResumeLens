@@ -2,7 +2,6 @@ from pyformlang.fst import FST
 
 from src.core.normalization.transducers import CaseFoldingTransducer
 
-
 class SkillNormalizer:
     def __init__(self, case_folder: CaseFoldingTransducer, vocabulary: FST) -> None:
         self._case_folder = case_folder
