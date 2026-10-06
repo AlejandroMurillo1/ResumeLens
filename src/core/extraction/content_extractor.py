@@ -119,64 +119,66 @@ def _p(name: str, body: str, *, section_only: bool = False) -> _SkillPattern:
     return _SkillPattern(name, regex, section_only)
 
 
+# Every pattern is case-insensitive and delimited by _p() (no match inside a
+# longer word, nor right after '.', '+', '#' or '-'), except where (?-i:...)
+# forces an exact-case match. Comments list the inputs each pattern admits.
 _SKILL_PATTERNS: tuple[_SkillPattern, ...] = (
     # Languages
-    _p("JAVASCRIPT", r"java[\s-]?script|js|ecmascript"),
-    _p("TYPESCRIPT", r"type[\s-]?script"),
-    _p("PYTHON", r"python(?:[\s-]?3(?:\.\d+)?)?"),
+    _p("JAVASCRIPT", r"java[\s-]?script|js|ecmascript"),  # JavaScript, java script, java-script, JS, ECMAScript (not the "js" of Node.js / React.js)
+    _p("TYPESCRIPT", r"type[\s-]?script"),  # TypeScript, type script, type-script
+    _p("PYTHON", r"python(?:[\s-]?3(?:\.\d+)?)?"),  # Python, Python3, Python 3, Python-3, Python 3.11
     # Front end
-    _p("REACT", r"react(?:[\s.-]?js)?"),
-    _p("ANGULAR", r"angular(?:[\s.-]?js)?"),
-    _p("VUE", r"vue(?:[\s.-]?js)?"),
+    _p("REACT", r"react(?:[\s.-]?js)?"),  # React, React.js, ReactJS, React js, React-js ("React Native" -> React)
+    _p("ANGULAR", r"angular(?:[\s.-]?js)?"),  # Angular, AngularJS, Angular.js, Angular js, Angular-js
+    _p("VUE", r"vue(?:[\s.-]?js)?"),  # Vue, Vue.js, VueJS, Vue js, Vue-js
     # Back end
-    _p("NODE_JS", r"node[\s.-]?js|(?-i:Node)"),
-    _p("DJANGO", r"django"),
-    _p("SPRING_BOOT", r"spring[\s-]?boot"),
-    _p("REST_API", r"rest(?:ful)?[\s-]?apis?|(?-i:REST|RESTful)"),
+    _p("NODE_JS", r"node[\s.-]?js|(?-i:Node)"),  # Node.js, NodeJS, node js, node-js, and the exact-case word "Node" (not "node")
+    _p("DJANGO", r"django"),  # Django, django
+    _p("SPRING_BOOT", r"spring[\s-]?boot"),  # Spring Boot, SpringBoot, spring-boot (not "Spring" alone)
+    _p("REST_API", r"rest(?:ful)?[\s-]?apis?|(?-i:REST|RESTful)"),  # REST API(s), REST-API, RESTAPI, RESTful API(s), rest api; bare "REST" / "RESTful" only in exact case
     # Databases
-    _p("SQL", r"sql"),
-    _p("NOSQL", r"no[\s-]?sql"),
-    _p("POSTGRESQL", r"postgres(?:ql)?|postgre[\s-]?sql"),
-    _p("MYSQL", r"my[\s-]?sql"),
-    _p("MONGODB", r"mongo(?:[\s-]?db)?"),
-    _p("ORACLE", r"oracle(?:[\s-]?db)?"),
-    _p("REDIS", r"redis"),
-    _p("CASSANDRA", r"cass?andra"),
+    _p("SQL", r"sql"),  # SQL, sql, PL/SQL, MS SQL (not NoSQL, MySQL, PostgreSQL, T-SQL, SQLite)
+    _p("NOSQL", r"no[\s-]?sql"),  # NoSQL, No SQL, No-SQL, nosql
+    _p("POSTGRESQL", r"postgres(?:ql)?|postgre[\s-]?sql"),  # Postgres, PostgreSQL, Postgre SQL, Postgre-SQL
+    _p("MYSQL", r"my[\s-]?sql"),  # MySQL, My SQL, My-SQL
+    _p("MONGODB", r"mongo(?:[\s-]?db)?"),  # Mongo, MongoDB, Mongo DB, Mongo-DB
+    _p("ORACLE", r"oracle(?:[\s-]?db)?"),  # Oracle, Oracle DB, OracleDB, Oracle-DB (also the company name; "Oracle Database" -> Oracle)
+    _p("REDIS", r"redis"),  # Redis, redis
+    _p("CASSANDRA", r"cass?andra"),  # Cassandra, Casandra (common typo); "Apache Cassandra" -> Cassandra
     # Data / ML
-    _p("PANDAS", r"pandas"),
-    _p("NUMPY", r"num[\s-]?py"),
-    _p("SCIKIT_LEARN", r"scikit[\s-]?learn|sklearn"),
-    _p("TENSORFLOW", r"tensor[\s-]?flow"),
-    _p("PYTORCH", r"py[\s-]?torch"),
-    _p("MACHINE_LEARNING", r"machine[\s-]learning|(?-i:ML)"),
-    _p("STATISTICS", r"statistics|statistical[\s-]analysis"),
+    _p("PANDAS", r"pandas"),  # Pandas, pandas
+    _p("NUMPY", r"num[\s-]?py"),  # NumPy, numpy, Num Py, Num-Py
+    _p("SCIKIT_LEARN", r"scikit[\s-]?learn|sklearn"),  # scikit-learn, Scikit Learn, scikitlearn, sklearn
+    _p("TENSORFLOW", r"tensor[\s-]?flow"),  # TensorFlow, tensorflow, Tensor Flow, Tensor-Flow
+    _p("PYTORCH", r"py[\s-]?torch"),  # PyTorch, pytorch, Py Torch, Py-Torch
+    _p("MACHINE_LEARNING", r"machine[\s-]learning|(?-i:ML)"),  # Machine Learning, machine-learning (separator required), and exact-case "ML"
+    _p("STATISTICS", r"statistics|statistical[\s-]analysis"),  # Statistics, Statistical Analysis, statistical-analysis (not "Statistical" alone)
     # Cloud / DevOps
-    _p("AWS", r"aws|amazon[\s-]web[\s-]services"),
-    _p("AZURE", r"azure"),
-    _p("GCP", r"gcp|google[\s-]cloud(?:[\s-]platform)?"),
-    _p("DOCKER", r"docker"),
-    _p("KUBERNETES", r"kubernetes|k8s"),
-    _p("ANSIBLE", r"ansible"),
-    _p("TERRAFORM", r"terraform"),
-    _p("CLOUDFORMATION", r"cloud[\s-]?formation"),
-    _p("JENKINS", r"jenkins"),
-    _p("GITHUB_ACTIONS", r"github[\s-]?actions"),
-    _p("GITLAB", r"gitlab(?:[\s-]?ci(?:/cd)?)?"),
-    _p("LINUX", r"linux"),
-    _p("GIT", r"git"),
+    _p("AWS", r"aws|amazon[\s-]web[\s-]services"),  # AWS, aws, Amazon Web Services, amazon-web-services
+    _p("AZURE", r"azure"),  # Azure, azure ("Microsoft Azure" -> Azure)
+    _p("GCP", r"gcp|google[\s-]cloud(?:[\s-]platform)?"),  # GCP, Google Cloud, Google Cloud Platform, google-cloud-platform
+    _p("DOCKER", r"docker"),  # Docker, docker ("Docker Compose" -> Docker; not "Dockerfile")
+    _p("KUBERNETES", r"kubernetes|k8s"),  # Kubernetes, kubernetes, K8s, k8s
+    _p("ANSIBLE", r"ansible"),  # Ansible, ansible
+    _p("TERRAFORM", r"terraform"),  # Terraform, terraform
+    _p("CLOUDFORMATION", r"cloud[\s-]?formation"),  # CloudFormation, Cloud Formation, Cloud-Formation, cloudformation
+    _p("JENKINS", r"jenkins"),  # Jenkins, jenkins
+    _p("GITHUB_ACTIONS", r"github[\s-]?actions"),  # GitHub Actions, GitHubActions, github-actions
+    _p("GITLAB", r"gitlab(?:[\s-]?ci(?:/cd)?)?"),  # GitLab, GitLab CI, GitLab-CI, GitLabCI, GitLab CI/CD
+    _p("LINUX", r"linux"),  # Linux, linux ("Linux-based" -> Linux)
+    _p("GIT", r"git"),  # Git, git, GIT (not GitHub / GitLab / GitHub Actions)
     # BI / analysis tools
-    _p("EXCEL", r"(?:ms|microsoft)[\s-]excel|(?-i:Excel)"),
-    _p("POWER_BI", r"power[\s-]?bi"),
-    _p("TABLEAU", r"tableau"),
-    _p("LOOKER", r"looker"),
+    _p("EXCEL", r"(?:ms|microsoft)[\s-]excel|(?-i:Excel|EXCEL)"),  # MS Excel, Microsoft Excel, ms-excel, and exact-case "Excel" (not "excel", "Excellent")
+    _p("POWER_BI", r"power[\s-]?bi"),  # Power BI, PowerBI, power-bi
+    _p("TABLEAU", r"tableau"),  # Tableau, tableau
+    _p("LOOKER", r"looker"),  # Looker, looker
     # Single letter: only trusted inside the skills section.
     _SkillPattern(
-        "R",
+        "R",  # Exact-case "R" standing alone ("Python, R, SQL", "R/Python", "(R)"); not "R&D", "R++", "R-squared"
         re.compile(r"(?<![\w.&+#'-])R(?![\w+#&'-])"),
         skills_section_only=True,
     ),
 )
-
 
 def _normalize_newlines(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n")

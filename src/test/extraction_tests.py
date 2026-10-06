@@ -170,6 +170,8 @@ class TestSkills:
         ("I know PyTorch", "PyTorch"),
         ("I know RESTful APIs", "RESTful APIs"),
         ("I know MS Excel", "MS Excel"),
+        ("I know Excel", "Excel"),
+        ("I know EXCEL", "EXCEL"),
         ("I know TypeScript", "TypeScript"),
         ("I know Vue.js", "Vue.js"),
         ("I know Python3", "Python3"),
@@ -199,8 +201,9 @@ class TestSkills:
         assert extractor.extract_skills("Node.js") == ("Node.js",)
         assert extractor.extract_skills("React.js") == ("React.js",)
 
-    def test_excellent_is_not_excel(self, extractor):
-        assert extractor.extract_skills("Excellent communicator") == ()
+    def test_excel_verb_and_excellent_are_not_matched(self, extractor):
+        assert extractor.extract_skills("Students excel at math") == ()
+        assert extractor.extract_skills("EXCELLENT communicator") == ()
 
     def test_single_letter_r_only_in_skills_section(self, extractor):
         assert extractor.extract_skills("Skills\nPython, R, SQL\n") == ("Python", "SQL", "R")
