@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 
-
 # --- extraction -------------------------------------------------------
 
 @dataclass(frozen=True)
