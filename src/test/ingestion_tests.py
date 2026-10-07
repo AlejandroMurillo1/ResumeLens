@@ -1,3 +1,5 @@
+
+import docx
 import pytest
 
 from src.core.ingestion.docx_loader import DocxLoader
@@ -61,6 +63,68 @@ def test_missing_file_raises_file_not_found(tmp_path, loader_cls):
 
     with pytest.raises(FileNotFoundError):
         loader_cls().load(missing)
+
+
+class TestDocxLoader:
+    def test_paragraphs_returned_in_order(self, tmp_path):
+        # ING-DOCX-01
+        document = docx.Document()
+        document.add_paragraph("John Doe")
+        document.add_paragraph("Skills: Python, SQL")
+        path = tmp_path / "cv.docx"
+        document.save(str(path))
+
+        result = DocxLoader().load(path)
+
+        assert result == "John Doe\nSkills: Python, SQL"
+
+    def test_no_paragraphs_returns_empty_string(self, tmp_path):
+        # ING-DOCX-02
+        document = docx.Document()
+        path = tmp_path / "empty.docx"
+        document.save(str(path))
+
+        assert DocxLoader().load(path) == ""
+
+    def test_table_content_is_absent_from_result(self, tmp_path):
+        # ING-DOCX-03 — documents the known limitation: python-docx's
+        # `.paragraphs` does not include text inside tables.
+        document = docx.Document()
+        document.add_paragraph("John Doe")
+        table = document.add_table(rows=1, cols=2)
+        table.cell(0, 0).text = "Python"
+        table.cell(0, 1).text = "SQL"
+        path = tmp_path / "with_table.docx"
+        document.save(str(path))
+
+        result = DocxLoader().load(path)
+
+        assert "John Doe" in result
+        assert "Python" not in result
+        assert "SQL" not in result
+
+    def test_corrupted_file_raises_ingestion_error(self, tmp_path):
+        # ING-DOCX-04
+        path = tmp_path / "corrupted.docx"
+        path.write_bytes(b"this is not a real docx file")
+
+        with pytest.raises(IngestionError):
+            DocxLoader().load(path)
+
+    def test_blank_paragraphs_are_preserved_as_separators(self, tmp_path):
+        # ING-DOCX-05
+        document = docx.Document()
+        document.add_paragraph("Experience")
+        document.add_paragraph("")
+        document.add_paragraph("Skills")
+        path = tmp_path / "cv.docx"
+        document.save(str(path))
+
+        result = DocxLoader().load(path)
+
+        assert result == "Experience\n\nSkills"
+
+
 
 class TestLoaderFactory:
     def test_txt_extension_returns_txt_loader(self, tmp_path):
