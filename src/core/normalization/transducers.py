@@ -4,11 +4,12 @@ from functools import reduce
 
 from pyformlang.fst import FST
 
-#TODO: Revisar la funcionalidad con . o _
+
 class Transducer(ABC):
     @abstractmethod
     def apply(self, text: str) -> str:
         raise NotImplementedError
+
 
 class CaseFoldingTransducer(Transducer):
     _PASSTHROUGH = string.digits + " "
@@ -38,9 +39,9 @@ class CaseFoldingTransducer(Transducer):
 def build_token_fst(canonical: str, spellings: list[str]) -> FST:
     fst = FST()
     for spelling in spellings:
-        fst.add_transition(0, spelling, 1, [canonical])
-    fst.add_start_state(0)
-    fst.add_final_state(1)
+        fst.add_transition("0", spelling, "1", [canonical])
+    fst.add_start_state("0")
+    fst.add_final_state("1")
     return fst
 
 
