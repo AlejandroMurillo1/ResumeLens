@@ -1,21 +1,35 @@
-from src.core.normalization.normalizer import SkillNormalizer
-from src.core.normalization.transducers import CaseFoldingTransducer, build_vocabulary_fst
+from src.core.normalization.normalizer import NormalizedSkills, SkillNormalizer
+from src.core.normalization.transducers import (
+    CaseFoldingTransducer,
+    StrippingTransducer,
+    Transducer,
+    build_vocabulary_fst,
+)
+from src.core.normalization.vocabulary import VOCABULARY
 
-VOCABULARY = {
-    "GIT": ["GIT"],
-    "JAVASCRIPT": ["JAVASCRIPT", "JS"],
-    "AWS": ["AWS", "AMAZON WEB SERVICES"],
-}
+
+def build_default_normalizer() -> SkillNormalizer:
+    """Normalizer wired with the full vocabulary: strip -> case fold -> lookup."""
+    return SkillNormalizer(
+        CaseFoldingTransducer(),
+        build_vocabulary_fst(VOCABULARY),
+        StrippingTransducer(),
+    )
+
 
 case_folder = CaseFoldingTransducer()
+stripper = StrippingTransducer()
 vocabulary_fst = build_vocabulary_fst(VOCABULARY)
-normalizer = SkillNormalizer(case_folder, vocabulary_fst)
+normalizer = SkillNormalizer(case_folder, vocabulary_fst, stripper)
 
-assert normalizer.normalize("javascript") == "JAVASCRIPT"
-assert normalizer.normalize("JS") == "JAVASCRIPT"
-assert normalizer.normalize("aws") == "AWS"
-assert normalizer.normalize("Amazon Web Services") == "AWS"
-
-assert normalizer.normalize("git") == "GIT"
-assert normalizer.normalize("GIT") == "GIT"
-assert normalizer.normalize("GitHub") is None
+__all__ = [
+    "VOCABULARY",
+    "CaseFoldingTransducer",
+    "NormalizedSkills",
+    "SkillNormalizer",
+    "StrippingTransducer",
+    "Transducer",
+    "build_default_normalizer",
+    "build_vocabulary_fst",
+    "normalizer",
+]
