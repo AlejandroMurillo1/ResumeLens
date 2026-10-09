@@ -7,6 +7,14 @@ returns the canonical token, `None` if `raw` is valid but matches no known
 vocabulary entry, and **raises `ValueError`** if `raw` contains a character
 outside `CaseFoldingTransducer`'s alphabet (letters, digits, and space).
 
+`SkillNormalizer` also accepts an optional third argument, a
+`StrippingTransducer`, that runs *before* case folding. **All cases in this
+document use the configuration without it** (`SkillNormalizer(case_folder,
+vocabulary)`), which is the behaviour the module had originally and which is
+kept unchanged. The configuration with the stripper, the full vocabulary,
+`normalize_skills` and the Stage 1 → Stage 2 alignment are covered in
+[`normalization_vocabulary_tests.md`](normalization_vocabulary_tests.md).
+
 ## Shared fixture
 
 ```python
@@ -93,7 +101,9 @@ token's accepted spellings leak into another's result.
   normal, expected outcome for arbitrary CV text); `ValueError` means "this
   isn't even a well-formed candidate string" (an alphabet violation). The
   pipeline catches `ValueError` where it iterates `raw_skills` and routes it
-  to `unrecognized_skills`, same as a `None` result.
+  to `unrecognized_skills`, same as a `None` result. `SkillNormalizer.normalize_skills`
+  now does exactly that, so callers can delegate to it instead of repeating
+  the `try/except`.
 
 - NORM-08 and NORM-10 both involve a form that was intentionally left
   unsupported, but for different reasons: NORM-08's `"spring boot"` fails
@@ -102,3 +112,15 @@ token's accepted spellings leak into another's result.
   the normalizer can process at all (an alphabet gap). Keeping them in
   separate tables makes that distinction explicit instead of burying it in
   a single mixed "rejected" bucket.
+
+- NORM-08 and NORM-10 describe the normalizer **without** a
+  `StrippingTransducer`. With the stripper (the default built by
+  `build_default_normalizer()`), `node.js` is no longer an alphabet gap
+  (`.` becomes a space) and `spring boot` is a recognized spelling of
+  `SPRING_BOOT` in the full vocabulary. These cases stay valid here because
+  they document the behaviour of the bare configuration, which still exists.
+
+- `build_vocabulary_fst` now rejects a vocabulary in which the same spelling
+  is listed under two canonical tokens (`ValueError`). The fixture above has
+  no such overlap, so none of these cases is affected; the check itself is
+  covered by VOC-04 in `normalization_vocabulary_tests.md`.
