@@ -1,13 +1,20 @@
 """Declarative definition of the four supported professional profiles.
 
-Rule convention, derived from the project context:
+Rule semantics (evaluated by the classifier, see ``src/core/classification``):
 
-* a single qualification (``Git``, ``Linux``)            -> ``REQUIRED``
-* qualifications written with a slash (``React/Angular``) -> ``ANY_OF``
+* ``REQUIRED``: every token of the group must be present;
+* ``ANY_OF``:   at least one token of the group must be present;
+* ``OPTIONAL``: the group imposes no condition.
 
-Group order is the canonical category order used by Stage 2/3; token order
-inside a group is the total order within that group. Tokens must exist in
-the normalisation vocabulary.
+Convention used below: a single qualification (``Git``, ``Linux``) is
+``REQUIRED``; alternatives written with a slash (``React/Angular``) are
+``ANY_OF``. *Data Analyst* has only ``ANY_OF`` groups: any relational database
+(``SQL`` included) satisfies its database requirement.
+
+Group order is the canonical category order used by projection and
+classification; token order inside a group is the total order within that
+group. A token must appear in at most one group of a profile, and every token
+must exist in the normalisation vocabulary.
 """
 
 from __future__ import annotations
@@ -55,7 +62,6 @@ def build_default_profiles() -> tuple[Profile, ...]:
             _group("Version control", required, "GIT"),
         )),
         Profile(DATA_ANALYST, (
-            _group("Query language", required, "SQL"),
             _group("Relational database", any_of, "SQL", "POSTGRESQL", "ORACLE", "MYSQL"),
             _group("Analysis tool", any_of, "EXCEL", "PYTHON", "R"),
             _group("Visualization", any_of, "POWER_BI", "TABLEAU", "LOOKER"),

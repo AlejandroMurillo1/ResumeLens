@@ -17,8 +17,7 @@ Relevant profile facts used below (from `src/core/profiles/definitions.py`):
 - Full Stack Developer group order: Language, Frontend framework, Backend
   framework, REST APIs, Relational database, Non-relational database,
   Version control.
-- Data Analyst lists `SQL` twice in its vocabulary: in `Query language` and in
-  `Relational database`.
+- Data Analyst's first group is `Relational database` with tokens `SQL`, `POSTGRESQL`, `ORACLE`, `MYSQL`, in that order.
 
 ## Filtering, ordering and duplicates
 
@@ -42,8 +41,8 @@ Candidate used by PRJ-11: `["PYTHON", "SQL", "GIT", "PANDAS", "EXCEL", "DOCKER",
 | ID | Scenario | Fixture | Expected result |
 |---|---|---|---|
 | PRJ-11 | The same tokens give a different word per profile (parametrized, 4 cases) | The candidate above projected onto each profile | Full Stack `("SQL", "GIT")`; Machine Learning Engineer `("PYTHON", "PANDAS", "SQL", "GIT")`; Cloud Engineer `("DOCKER", "LINUX", "GIT")`; Data Analyst `("SQL", "EXCEL", "PYTHON", "PANDAS")` |
-| PRJ-12 | A token listed in two groups appears once, at its first position | Data Analyst, `["POSTGRESQL", "SQL"]`; the test also asserts that `SQL` occurs twice in the profile's `vocabulary` | `("SQL", "POSTGRESQL")` |
-| PRJ-13 | Full vocabulary in reverse order | Each of the four profiles, `reversed(profile.vocabulary)` | `tuple(dict.fromkeys(profile.vocabulary))`: the profile order with repeated tokens removed |
+| PRJ-12 | Order inside the relational group follows the profile | Data Analyst, `["MYSQL", "SQL", "POSTGRESQL"]` | `("SQL", "POSTGRESQL", "MYSQL")` |
+| PRJ-13 | Full vocabulary in reverse order | Each of the four profiles, `reversed(profile.vocabulary)` | `profile.vocabulary` itself |
 
 ## Order independence
 
@@ -59,15 +58,11 @@ Candidate used by PRJ-11: `["PYTHON", "SQL", "GIT", "PANDAS", "EXCEL", "DOCKER",
 
 ## Notes
 
-- Projection does not use `GroupRule`. Whether a word satisfies `REQUIRED`
+- Projection does not use `GroupRule`. A token belongs to one group only, so no token needs special handling. Whether a word satisfies `REQUIRED`
   and `ANY_OF` groups is decided by the classifier, not here.
-- PRJ-12 documents how the projector handles the duplicate `SQL` of the
-  *Data Analyst* definition: one occurrence, at the first position. If that
-  duplicate is removed from the profile, PRJ-12 must be updated (its premise
-  assertion `vocabulary.count("SQL") == 2` will fail first, on purpose).
 - PRJ-13 is a property check: because the projector sorts by first position in
   the vocabulary, projecting the whole vocabulary in any order must give the
-  vocabulary itself without repeats.
+  vocabulary itself.
 - PRJ-15 couples three stages. If an extractor pattern, a vocabulary spelling
   or a profile token changes, this is the case that notices a mismatch.
 - Run with `pytest src/test/projection_tests.py` from the repository root.
