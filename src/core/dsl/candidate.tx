@@ -1,0 +1,33 @@
+Candidate:
+    'candidate' '{'
+        contact=Contact
+        'education' '{' education+=STRING '}'
+        'experience' '{' experience+=STRING '}'
+        'certifications' '{' certifications*=STRING '}'
+        'skills' '{' skills+=Skill[','] '}'
+        'profiles' '{' results+=ProfileResult '}'
+    '}'
+;
+
+Contact:
+    'contact' '{'
+        'name' ':' name=STRING
+        'email' ':' email=Email
+        'phone' ':' phone=Phone
+    '}'
+;
+
+Skill:
+    name=SkillName
+;
+
+ProfileResult:
+    name=STRING status=Status 'evaluated' '[' evaluated+=[Skill|SkillName][','] ']'
+;
+
+Status: 'ACCEPTED' | 'REJECTED';
+
+// --- terminals (match rules) ---
+SkillName: /[A-Z][A-Z0-9]*(_[A-Z0-9]+)*/;
+Email: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+Phone: /\+?[0-9]{7,15}/;
