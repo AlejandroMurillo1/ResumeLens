@@ -13,11 +13,6 @@ ALL_NAMES = [FULL_STACK_DEVELOPER, MACHINE_LEARNING_ENGINEER, CLOUD_ENGINEER, DA
 RELATIONAL_DB = ("SQL", "POSTGRESQL", "ORACLE", "MYSQL")
 NON_RELATIONAL_DB = ("NOSQL", "MONGODB", "REDIS", "CASSANDRA")
 
-# Tokens that currently appear more than once inside the same profile.
-# Data Analyst lists SQL both as REQUIRED ("Query language") and inside the
-# ANY_OF "Relational database" group.
-KNOWN_DUPLICATES: dict[str, set[str]] = {DATA_ANALYST: {"SQL"}}
-
 
 @pytest.fixture
 def registry() -> ProfileRegistry:
@@ -79,11 +74,11 @@ class TestProfileDefinitions:
         for profile in registry.get_all():
             assert len(_labels(profile)) == len(set(_labels(profile))), profile.name
 
-    def test_no_unexpected_token_repeated_inside_a_profile(self, registry):
+    def test_no_token_repeated_inside_a_profile(self, registry):
+        """The classifier requires each token to belong to a single group."""
         for profile in registry.get_all():
             vocab = profile.vocabulary
-            duplicated = {t for t in vocab if vocab.count(t) > 1}
-            assert duplicated == KNOWN_DUPLICATES.get(profile.name, set()), profile.name
+            assert len(vocab) == len(set(vocab)), profile.name
 
     def test_no_token_repeated_inside_a_group(self, registry):
         for profile in registry.get_all():
@@ -133,13 +128,17 @@ class TestProfileDefinitions:
     def test_data_analyst(self, registry):
         p = registry.get_by_name(DATA_ANALYST)
         assert _labels(p) == [
-            "Query language", "Relational database", "Analysis tool",
-            "Visualization", "Analysis library",
+            "Relational database", "Analysis tool", "Visualization", "Analysis library",
         ]
-        assert _group(p, "Query language").rule is GroupRule.REQUIRED
         assert _group(p, "Analysis tool").tokens == ("EXCEL", "PYTHON", "R")
         assert _group(p, "Visualization").tokens == ("POWER_BI", "TABLEAU", "LOOKER")
-        assert _required(p) == {"SQL"}
+        assert _group(p, "Analysis library").tokens == ("PANDAS", "STATISTICS")
+
+    def test_data_analyst_has_only_any_of_groups(self, registry):
+        p = registry.get_by_name(DATA_ANALYST)
+        assert all(g.rule is GroupRule.ANY_OF for g in p.groups)
+        assert _required(p) == set()
+        assert p.vocabulary.count("SQL") == 1  # any relational database covers SQL
 
     def test_vocabulary_is_flattened_in_group_order(self, registry):
         p = registry.get_by_name(CLOUD_ENGINEER)

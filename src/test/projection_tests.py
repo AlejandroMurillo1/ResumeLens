@@ -86,15 +86,16 @@ class TestPerProfile:
     ):
         assert projector.project(self.CANDIDATE, registry.get_by_name(profile_name)) == expected
 
-    def test_token_listed_in_two_groups_appears_once_at_its_first_position(self, projector, registry):
+    def test_order_inside_the_relational_group_follows_the_profile(self, projector, registry):
         data_analyst = registry.get_by_name(DATA_ANALYST)
-        assert data_analyst.vocabulary.count("SQL") == 2  # documents the premise
-        assert projector.project(["POSTGRESQL", "SQL"], data_analyst) == ("SQL", "POSTGRESQL")
+        assert projector.project(["MYSQL", "SQL", "POSTGRESQL"], data_analyst) == (
+            "SQL", "POSTGRESQL", "MYSQL",
+        )
 
-    def test_full_vocabulary_in_reverse_gives_the_profile_order_without_repeats(self, projector, registry):
+    def test_full_vocabulary_in_reverse_gives_the_profile_order(self, projector, registry):
         for profile in registry.get_all():
             reversed_vocab = list(reversed(profile.vocabulary))
-            assert projector.project(reversed_vocab, profile) == tuple(dict.fromkeys(profile.vocabulary))
+            assert projector.project(reversed_vocab, profile) == profile.vocabulary
 
 
 class TestOrderIndependence:
