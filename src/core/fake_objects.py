@@ -31,17 +31,15 @@ FAKE_PROFILES = (
 
 
 class FakeAutomatonFactory:
-    @staticmethod
     def build(self, profile: Profile):
         return _FakeAutomaton()
 
 
 class _FakeAutomaton:
-    @staticmethod
     def accepts(self, sequence: list[str]) -> bool:
-        return len(sequence) > 0  # placeholder: "aceptado si hay algo que evaluar"
+        return len(sequence) > 0
+
 
 class FakeProjector:
-    @staticmethod
     def project(self, tokens: list[str], profile) -> list[str]:
         return [t for t in tokens if t in profile.vocabulary]

@@ -6,45 +6,29 @@ class ResumeLensPipeline:
     def __init__(
         self,
         loader_factory,
-        extract_all,
-        normalizer,
-        projector,
+        extractor,          # ContentExtractor-like: .extract(text) -> RawProfile
+        normalizer,          # SkillNormalizer-like: .normalize_skills(raws) -> NormalizedSkills
+        projector,           # still a fake today
         profiles,
-        automaton_factory,
+        automaton_factory,   # still a fake today
     ) -> None:
         self._loader_factory = loader_factory
-        self._extract_all = extract_all
+        self._extractor = extractor
         self._normalizer = normalizer
         self._projector = projector
         self._profiles = profiles
-        # Built once, here, not per `process()` call.
-        self._automatons = {
-            profile.name: automaton_factory.build(profile) for profile in profiles
-        }
+        self._automatons = {p.name: automaton_factory.build(p) for p in profiles}
 
     def process(self, file_path: str | Path) -> CandidateReport:
         path = Path(file_path)
         text = self._loader_factory.get_loader(path).load(path)
-        raw_profile = self._extract_all(text)
+        raw_profile = self._extractor.extract(text)
 
-        canonical_skills: list[str] = []
-        unrecognized_skills: list[str] = []
-        for raw_skill in raw_profile.raw_skills:
-            try:
-                canonical = self._normalizer.normalize(raw_skill)
-            except ValueError:
-                unrecognized_skills.append(raw_skill)
-                continue
-            if canonical is None:
-                unrecognized_skills.append(raw_skill)
-            else:
-                canonical_skills.append(canonical)
-
-        deduped_skills = list(dict.fromkeys(canonical_skills))  # order-preserving dedupe
+        normalized = self._normalizer.normalize_skills(raw_profile.raw_skills)
 
         classifications = []
         for profile in self._profiles:
-            sequence = self._projector.project(deduped_skills, profile)
+            sequence = self._projector.project(list(normalized.recognized), profile)
             accepted = self._automatons[profile.name].accepts(sequence)
             classifications.append(
                 ClassificationResult(
@@ -59,7 +43,7 @@ class ResumeLensPipeline:
             education=raw_profile.education,
             experience=raw_profile.experience,
             certifications=raw_profile.certifications,
-            skills=tuple(deduped_skills),
+            skills=normalized.recognized,
             classifications=tuple(classifications),
-            unrecognized_skills=tuple(unrecognized_skills),
+            unrecognized_skills=normalized.unrecognized,
         )
