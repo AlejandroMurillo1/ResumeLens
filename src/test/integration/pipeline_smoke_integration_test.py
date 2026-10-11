@@ -1,15 +1,15 @@
 import tempfile
 
+from src.core.classification import ProfileClassifier
 from src.core.dsl.renderer import render_markdown
 from src.core.ingestion.loader_factory import LoaderFactory
 from src.core.extraction.content_extractor import ContentExtractor
 from src.core.normalization import build_default_normalizer
 from src.core.profiles import ProfileRegistry
 from src.core.pipeline.orchestrator import ResumeLensPipeline
-from src.core.fake_objects import FakeProjector, FakeAutomatonFactory
 from src.core.dsl import DSLValidator, GRAMMAR_PATH, DSLError
 from src.core.dsl.serializer import to_dsl
-
+from src.core.projection import ProfileProjector
 
 SAMPLE_CV = """\
 Jane Doe
@@ -22,7 +22,7 @@ EXPERIENCE
 Backend Developer, Acme Corp, 2021-2024
 
 SKILLS
-Python, Django, React.js, PostgreSQL, Docker, AWS, Git
+Python, Django, React.js, JavaScript, PostgreSQL, MongoDB, REST API, Docker, AWS, Git
 """
 
 with tempfile.NamedTemporaryFile(suffix=".txt", mode="w", delete=False) as f:
@@ -34,8 +34,8 @@ pipeline = ResumeLensPipeline(
     loader_factory=LoaderFactory,
     extractor=ContentExtractor(),
     normalizer=build_default_normalizer(),
-    projector=FakeProjector(),
-    automaton_factory=FakeAutomatonFactory(),
+    projector=ProfileProjector(),
+    classifier=ProfileClassifier(),
     profiles=profiles,
 )
 
