@@ -30,4 +30,4 @@ Status: 'ACCEPTED' | 'REJECTED';
 // --- terminals (match rules) ---
 SkillName: /[A-Z][A-Z0-9]*(_[A-Z0-9]+)*/;
 Email: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
-Phone: /\+?[0-9]{7,15}/;
+Phone: /\+?[0-9()\-.\s]{6,19}[0-9]/;

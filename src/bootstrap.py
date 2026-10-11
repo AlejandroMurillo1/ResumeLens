@@ -1,31 +1,30 @@
 # src/bootstrap.py
 import streamlit as st
 
-from core.ingestion.loader_factory import LoaderFactory
-from core.normalization import CaseFoldingTransducer, build_vocabulary_fst, SkillNormalizer, VOCABULARY
-from core.dsl.validator import DSLValidator
-from core.pipeline.orchestrator import ResumeLensPipeline
+from src.core.ingestion.loader_factory import LoaderFactory
+from src.core.extraction.content_extractor import ContentExtractor
+from src.core.normalization import build_default_normalizer
+from src.core.profiles import ProfileRegistry
+from src.core.dsl import DSLValidator
+from src.core.pipeline.orchestrator import ResumeLensPipeline
 
-from core.fake_objects import fake_extract_all, FAKE_PROFILES, FakeAutomatonFactory
+from src.core.fake_objects import FakeProjector, FakeAutomatonFactory  # projection/classification: pendientes
 
 
 @st.cache_resource
 def build_pipeline() -> ResumeLensPipeline:
-    case_folder = CaseFoldingTransducer()
-    vocabulary_fst = build_vocabulary_fst(VOCABULARY)
-    normalizer = SkillNormalizer(case_folder, vocabulary_fst)
+    profiles = ProfileRegistry().get_all()
 
-    profiles = FAKE_PROFILES                      # reemplazar por ProfileRegistry().get_all()
-    automaton_factory = FakeAutomatonFactory()     # reemplazar por el AutomatonFactory real
-    extract_all = fake_extract_all                 # reemplazar por extraction.extract_all
-
-    dsl_validator = DSLValidator(valid_profile_names=[p.name for p in profiles])
+    dsl_validator = DSLValidator(
+        grammar_path="candidate.tx",  # ajusta a la ruta real en tu repo
+        valid_profile_names=tuple(p.name for p in profiles),
+    )
 
     return ResumeLensPipeline(
         loader_factory=LoaderFactory,
-        extract_all=extract_all,
-        normalizer=normalizer,
+        extractor=ContentExtractor(),
+        normalizer=build_default_normalizer(),
+        projector=FakeProjector(),               # TODO: reemplazar cuando llegue projection
+        automaton_factory=FakeAutomatonFactory(), # TODO: reemplazar cuando llegue classification
         profiles=profiles,
-        automaton_factory=automaton_factory,
-        dsl_validator=dsl_validator
     )
