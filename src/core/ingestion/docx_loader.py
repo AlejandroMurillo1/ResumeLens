@@ -1,12 +1,14 @@
 from pathlib import Path
 
-import docx 
+import docx
 
 from src.core.ingestion.file_loader import FileLoader, IngestionError
 
 
 class DocxLoader(FileLoader):
     def load(self, path: Path) -> str:
+        if not path.exists():
+            raise FileNotFoundError(path)
         try:
             document = docx.Document(str(path))
         except Exception as exc:
