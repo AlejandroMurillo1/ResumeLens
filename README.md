@@ -36,7 +36,7 @@ No local installation or setup is required to test the application. Simply acces
 
 👉 **[ia-resumelens.streamlit.app](https://ia-resumelens.streamlit.app)**
 
-Upload any candidate resume file to view real-time extraction, normalization, and profile evaluation results.
+Upload any candidate resume file –or the ones inside `test_files`– to view real-time extraction, normalization, and profile evaluation results.
 
 ---
 Thank you for exploring **ResumeLens**! This project bridges formal language theory (FSTs and DFAs) with practical recruitment automation. If you have any feedback or suggestions, feel free to reach out.
