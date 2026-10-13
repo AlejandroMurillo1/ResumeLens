@@ -22,7 +22,7 @@ Skill:
 ;
 
 ProfileResult:
-    name=STRING status=Status 'evaluated' '[' evaluated+=[Skill|SkillName][','] ']'
+    name=STRING status=Status 'evaluated' '[' evaluated*=[Skill|SkillName][','] ']'
 ;
 
 Status: 'ACCEPTED' | 'REJECTED';
