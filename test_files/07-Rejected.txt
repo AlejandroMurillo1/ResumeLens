@@ -1,0 +1,12 @@
+Santiago Gómez
+santiago.gomez@mail.com | +57 306 666 7788
+
+EDUCATION
+BSc in Information Systems, Universidad del Norte, 2021
+
+EXPERIENCE
+DevOps Intern, CloudNine Solutions, 2021-2022
+Assisted with containerized deployments and basic automation.
+
+SKILLS
+AWS, Docker, Jenkins, git, Python, Communication

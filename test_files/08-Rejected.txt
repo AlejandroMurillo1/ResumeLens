@@ -1,0 +1,12 @@
+Camilo Herrera
+camilo.herrera@mail.com | +57 307 888 9900
+
+EDUCATION
+BSc in Industrial Engineering, Universidad del Rosario, 2018
+
+EXPERIENCE
+IT Support Analyst, Grupo Andino, 2018-2024
+General technical support across infrastructure and internal tooling.
+
+SKILLS
+Git, Docker, Linux, Python, Excel, Tableau, SQL, Communication, Problem Solving
