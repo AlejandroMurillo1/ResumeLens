@@ -1,0 +1,12 @@
+Marco Fernández
+marco.fernandez@mail.com | +57 300 456 7890
+
+EDUCATION
+BSc in Software Engineering, Universidad Icesi, 2020
+
+EXPERIENCE
+Full Stack Developer, Bright Apps, 2020-2024
+Built and maintained customer-facing web applications end to end.
+
+SKILLS
+JavaScript, React.js, Node JS, REST API, Postgres, Mongo DB, git, Docker, Figma, Agile, Scrum

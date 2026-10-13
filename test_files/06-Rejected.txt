@@ -1,0 +1,12 @@
+Valentina Ríos
+valentina.rios@mail.com | +57 305 333 4455
+
+EDUCATION
+BSc in Statistics, Universidad Javeriana, 2022
+
+EXPERIENCE
+Data Science Intern, QuantLab, 2022-2023
+Supported exploratory data analysis for internal research projects.
+
+SKILLS
+Python, Pandas, SQL, Numpy, Jupyter Notebook, Excel, Communication

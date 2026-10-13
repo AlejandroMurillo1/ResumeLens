@@ -1,0 +1,12 @@
+Elena Vargas
+elena.vargas@mail.com | +57 301 222 3344
+
+EDUCATION
+MSc in Data Science, Universidad de los Andes, 2021
+
+EXPERIENCE
+Machine Learning Engineer, DataForge Labs, 2021-2024
+Developed and deployed predictive models for internal analytics products.
+
+SKILLS
+Python 3.11, Pandas, scikit-learn, Tensor Flow, Machine Learning, My SQL, git, Statistics, Jupyter Notebook, Excel

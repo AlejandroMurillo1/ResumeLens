@@ -1,0 +1,12 @@
+Julián Restrepo
+julian.restrepo@mail.com | +57 303 777 8899
+
+EDUCATION
+BSc in Business Analytics, Universidad EAFIT, 2020
+
+EXPERIENCE
+Data Analyst, Metrica Consulting, 2020-2024
+Built dashboards and reports to support commercial decision-making.
+
+SKILLS
+SQL, MS Excel, Tableau, Pandas, Power BI, Postgres, R, Communication, Leadership

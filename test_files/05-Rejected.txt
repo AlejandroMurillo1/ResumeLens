@@ -1,0 +1,12 @@
+Diego Salazar
+diego.salazar@mail.com | +57 304 111 2233
+
+EDUCATION
+BSc in Computer Science, Universidad del Valle, 2023
+
+EXPERIENCE
+Junior Frontend Developer, PixelCraft, 2023-2024
+Built UI components for a small internal web application.
+
+SKILLS
+JavaScript, React, Node.js, git, HTML, CSS, Teamwork

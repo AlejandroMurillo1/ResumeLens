@@ -1,0 +1,12 @@
+Camila Restrepo
+camila.restrepo@mail.com | +57 302 555 1122
+
+EDUCATION
+BSc in Systems Engineering, Universidad Nacional, 2019
+
+EXPERIENCE
+Cloud Engineer, NimbusTech, 2019-2024
+Designed and maintained cloud infrastructure and CI/CD pipelines.
+
+SKILLS
+Amazon Web Services, Docker, Kubernetes, Terraform, GitHub Actions, Linux, git, Python, Scrum
