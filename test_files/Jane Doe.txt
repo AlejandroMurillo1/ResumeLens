@@ -1,0 +1,18 @@
+Jane Doe
+jane.doe@example.com | +57 300 123 4567
+
+## Summary
+Full-stack engineer with some cloud exposure.
+
+## Technical Skills
+JS, TypeScript, React.js, Node.js, REST APIs, PostgreSQL, MongoDB, Git, Docker, Linux, k8s, Python, Excel
+
+## Experience
+- Full-Stack Developer, ACME (2021 - 2024)
+- Built REST APIs with Node.js and PostgreSQL
+
+## Education
+B.Sc. Computer Science, Universidad del Valle, 2020
+
+## Certifications
+* Scrum Master
